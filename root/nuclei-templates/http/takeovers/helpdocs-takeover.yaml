@@ -1,0 +1,36 @@
+id: helpdocs-takeover
+
+info:
+  name: HelpDocs Takeover Detection
+  author: philippedelteil
+  severity: high
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz/issues/402
+  metadata:
+    max-request: 1
+  tags: takeover,helpdocs
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    redirects: true
+    max-redirects: 2
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        part: body
+        words:
+          - "You've tried to access an account/page that does not exist"
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 490a004630440220482c6b083ccbabb1e2158009605bfe5dcbccf91764b760ebdaf751144015b6db022038fc8950954039feeb1f93f637a0bc96e0e5c1f248fdfc15d231bd01ec86e675:922c64590222798bb761d5b6d8e72950

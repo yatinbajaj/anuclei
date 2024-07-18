@@ -1,0 +1,33 @@
+id: tave-takeover
+
+info:
+  name: tave takeover detection
+  author: pdteam
+  severity: high
+  description: tave takeover was detected.
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz
+  metadata:
+    max-request: 1
+  tags: takeover
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - "<h1>Error 404: Page Not Found</h1>"
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4a0a00473045022100f567fa227ec1c59ea5e3cd810ff5fa7165cb404dd5c23c4889fd57a9e8d600320220561e1f08ae5f4a8f8ccb587892a42ae224f67044eac30646fb8e25ce86e56cf8:922c64590222798bb761d5b6d8e72950

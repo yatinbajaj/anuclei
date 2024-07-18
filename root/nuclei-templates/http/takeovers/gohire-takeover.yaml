@@ -1,0 +1,37 @@
+id: gohire-takeover
+
+info:
+  name: GoHire Takeover Detection
+  author: philippedelteil
+  severity: high
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz/issues/403
+  metadata:
+    max-request: 1
+  tags: takeover,gohire
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        part: body
+        words:
+          - 'You may have followed an invalid link or the job you are looking for has been archived'
+
+      - type: status
+        status:
+          - 404
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 490a00463044022037b397c0657ab6c3ea60424bfe1551b5d4674a30c654fd687baee22a578595b2022051cd6752d29108a910e38993aea9fcb8b51bb6596d82f4f485cc8c21a81e939d:922c64590222798bb761d5b6d8e72950

@@ -1,0 +1,38 @@
+id: announcekit-takeover
+
+info:
+  name: Announcekit Takeover Detection
+  author: melbadry9
+  severity: high
+  description: Announcekit takeover was detected.
+  reference:
+    - https://blog.melbadry9.xyz/dangling-dns/xyz-services/dangling-dns-announcekit
+    - https://github.com/EdOverflow/can-i-take-over-xyz/issues/228
+  metadata:
+    max-request: 1
+  tags: takeover,announcekit
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - 'Error 404 - AnnounceKit'
+
+      - type: status
+        status:
+          - 404
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4b0a00483046022100abf4b3ac11f8489ae50ed7777d1f7d75274fa69a6f4a9fdb621096c7276890d9022100ddc4b39e3a090dfd6f23f0454b07cd6fc159fc4b9671168dbd4d3f85b626dbed:922c64590222798bb761d5b6d8e72950

@@ -1,0 +1,51 @@
+id: worksites-takeover
+
+info:
+  name: Worksites Takeover Detection
+  author: melbadry9,dogasantos
+  severity: high
+  description: Worksites takeover was detected.
+  reference:
+    - https://melbadry9.gitbook.io/blog/dangling-dns/xyz-services/ddns-worksites
+  metadata:
+    verified: true
+    max-request: 2
+  tags: takeover,dns
+
+dns:
+  - name: "{{FQDN}}"
+    type: A
+    class: inet
+    recursion: true
+    retries: 3
+    matchers:
+      - type: word
+        words:
+          - "69.164.223.206"
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - "Company Not Found"
+          - "worksites.net"
+        condition: and
+
+      - type: status
+        status:
+          - 404
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4a0a00473045022015e2656c9f329d20fd4891ffcb9834632dac58c492aa84ac9c1666ee62136621022100a36e344c48be6ee62f9f857801310f73f405cd9b5df22503a00171ea141b17c1:922c64590222798bb761d5b6d8e72950

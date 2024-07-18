@@ -1,0 +1,42 @@
+id: netlify-takeover
+
+info:
+  name: netlify takeover detection
+  author: 0xPrial,pdteam
+  severity: high
+  description: netlify takeover was detected.
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz/issues/40
+    - https://monish-basaniwal.medium.com/how-i-found-my-first-subdomain-takeover-vulnerability-b7d5c17b61fd
+    - https://github.com/EdOverflow/can-i-take-over-xyz/pull/289
+  metadata:
+    max-request: 1
+  tags: takeover,netlify
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        part: body
+        words:
+          - "Not Found - Request ID:"
+        case-insensitive: true
+
+      - type: word
+        part: header
+        words:
+          - "Netlify"
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4a0a0047304502204764f51efe7fea4b2004ff43b29b32c53238303e8951f73f30fbf6bd76e1e7b8022100cb22252706a3c243c470c662f9f71fa85726f93f718d7fe53b3e5147a828750b:922c64590222798bb761d5b6d8e72950

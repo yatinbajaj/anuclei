@@ -1,0 +1,37 @@
+id: zendesk-takeover
+
+info:
+  name: Zendesk Takeover Detection
+  author: pdteam
+  severity: high
+  description: Zendesk takeover was detected.
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz/issues/23
+    - https://hackerone.com/reports/869605
+    - https://hackerone.com/reports/759454
+  metadata:
+    max-request: 1
+  tags: takeover,zendesk,hackerone
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - "this help center no longer exists"
+          - "Help Center Closed"
+        condition: or
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4b0a00483046022100a3eb6a6435a19adedbce449af23b505508d27a492504f2b6de496d0ea53d2dec022100ea6e2f16a078c3406b623e4c67bd1ee41c4273bef10fe48f8fee50f5cc35822a:922c64590222798bb761d5b6d8e72950

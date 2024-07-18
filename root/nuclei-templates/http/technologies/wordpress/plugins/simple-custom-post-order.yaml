@@ -1,0 +1,49 @@
+id: wordpress-simple-custom-post-order
+
+info:
+  name: Simple Custom Post Order Detection
+  author: ricardomaia
+  severity: info
+  reference:
+    - https://wordpress.org/plugins/simple-custom-post-order/
+  metadata:
+    plugin_namespace: simple-custom-post-order
+    wpscan: https://wpscan.com/plugin/simple-custom-post-order
+  tags: tech,wordpress,wp-plugin,top-200
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/wp-content/plugins/simple-custom-post-order/readme.txt"
+
+    payloads:
+      last_version: helpers/wordpress/plugins/simple-custom-post-order.txt
+
+    extractors:
+      - type: regex
+        part: body
+        internal: true
+        name: internal_detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+      - type: regex
+        part: body
+        name: detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+    matchers-condition: or
+    matchers:
+      - type: dsl
+        name: "outdated_version"
+        dsl:
+          - compare_versions(internal_detected_version, concat("< ", last_version))
+
+      - type: regex
+        part: body
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+# digest: 4a0a0047304502210095e2bcc157a54700af0a2ddaa160a6f47e38bf0cefbdbfbe1035c400a888d21002200e98d2c7f526d64286580146da0615d92c2b2fa426c80589282284b5230e1dc0:922c64590222798bb761d5b6d8e72950

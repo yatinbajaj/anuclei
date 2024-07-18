@@ -1,0 +1,35 @@
+id: intercom-takeover
+
+info:
+  name: Intercom Takeover Detection
+  author: pdteam
+  severity: high
+  description: Intercom takeover was detected.
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz/issues/69
+  metadata:
+    max-request: 1
+  tags: takeover,intercom
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - '<h1 class="headline">Uh oh. That page doesn\’t exist.</h1>'
+          - 'This page is reserved for artistic dogs.'
+        condition: and
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4b0a004830460221009aef81a7fc6a59a2ba6de62e3772517f8c0dd2b1fb2c9c7cd325f9a7bea24645022100c585d84759bd8e0084076b7b4f684e29e878e894f643e4a16f0ec7c17ddf2b6d:922c64590222798bb761d5b6d8e72950

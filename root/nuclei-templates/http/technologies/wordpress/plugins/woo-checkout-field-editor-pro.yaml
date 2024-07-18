@@ -1,0 +1,49 @@
+id: wordpress-woo-checkout-field-editor-pro
+
+info:
+  name: Checkout Field Editor (Checkout Manager) for WooCommerce Detection
+  author: ricardomaia
+  severity: info
+  reference:
+    - https://wordpress.org/plugins/woo-checkout-field-editor-pro/
+  metadata:
+    plugin_namespace: woo-checkout-field-editor-pro
+    wpscan: https://wpscan.com/plugin/woo-checkout-field-editor-pro
+  tags: tech,wordpress,wp-plugin,top-200
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/wp-content/plugins/woo-checkout-field-editor-pro/readme.txt"
+
+    payloads:
+      last_version: helpers/wordpress/plugins/woo-checkout-field-editor-pro.txt
+
+    extractors:
+      - type: regex
+        part: body
+        internal: true
+        name: internal_detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+      - type: regex
+        part: body
+        name: detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+    matchers-condition: or
+    matchers:
+      - type: dsl
+        name: "outdated_version"
+        dsl:
+          - compare_versions(internal_detected_version, concat("< ", last_version))
+
+      - type: regex
+        part: body
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+# digest: 4a0a00473045022100acf7013c8f9c9faaaca7f585991b49534d00832440e2f9c4a65ca85792a8df6b02206d5527ac39a0b8786be011644d0e2ee3fdc29ef7163c8443b55f35ad5c4a2a38:922c64590222798bb761d5b6d8e72950

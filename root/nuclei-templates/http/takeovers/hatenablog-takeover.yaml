@@ -1,0 +1,34 @@
+id: hatenablog-takeover
+
+info:
+  name: Hatenablog Takeover Detection
+  author: pdteam
+  severity: high
+  description: Hatenablog takeover was detected.
+  reference:
+    - https://beaglesecurity.com/blog/vulnerability/hatenablog-takeover-detection.html
+    - https://github.com/EdOverflow/can-i-take-over-xyz
+  metadata:
+    max-request: 1
+  tags: takeover,hatenablog
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - "404 Blog is not found"
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4b0a004830460221008f1bd167e0d54c56419cfacf1f579b4a94ec793afcd2d71e41178d2c9911970f022100ea66618ec13a8f8f92c100bf9172d271c29ac6c890aebdec3a5745077d0549ef:922c64590222798bb761d5b6d8e72950

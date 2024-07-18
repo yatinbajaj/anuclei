@@ -1,0 +1,37 @@
+id: uptime-takeover
+
+info:
+  name: Uptime Takeover Detection
+  author: philippedelteil
+  severity: high
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz/issues/368
+  metadata:
+    max-request: 1
+  tags: takeover,uptime
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        part: body
+        words:
+          - '<html><body>You are being <a href="https://uptime.betterstack.com">redirected</a>.</body></html>'
+
+      - type: status
+        status:
+          - 302
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 490a0046304402206ae2e4db61257dc700fe2d71b47dfbe0f242e7a9531703ebe3faad83112f25fa02204de1723eed20893ec58a00cb7f0cd7caa2ba0c32cb0fdd897f98626fd8a39677:922c64590222798bb761d5b6d8e72950

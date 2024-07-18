@@ -1,0 +1,33 @@
+id: readthedocs-takeover
+
+info:
+  name: Read the Docs Takeover Detection
+  author: pdteam
+  severity: high
+  description: Read the Docs takeover was detected.
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz/issues/160
+  metadata:
+    max-request: 1
+  tags: takeover,readthedocs
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - unknown to Read the Docs
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 490a0046304402205b73bb8a1171ae52b384c6eb817ed2be50e3e243f754c2f19806a5d4ae45a35f02205fd4870a807fb475b6e1322e6135385950d8b1ecca8e5fbfcea83c1b364362a5:922c64590222798bb761d5b6d8e72950

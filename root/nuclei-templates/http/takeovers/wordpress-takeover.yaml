@@ -1,0 +1,41 @@
+id: wordpress-takeover
+
+info:
+  name: WordPress takeover detection
+  author: pdteam,geeknik
+  severity: high
+  description: Bigcartel takeover was detected.
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz/pull/176
+    - https://hackerone.com/reports/274336
+  metadata:
+    max-request: 1
+  tags: takeover,wordpress,hackerone
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - "Do you want to register"
+          - ".wordpress.com</em> doesn&#8217;t&nbsp;exist"
+        condition: and
+
+      - type: word
+        words:
+          - "cannot be registered"
+        negative: true
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 490a0046304402200e210350415af8d696a974aad4b7afad97e09eb49b626d286ba49bfc002c57d102202c34a0126212979cb71c47da6b0a283c71c61f4aba18f41b8bdbec5b70c10328:922c64590222798bb761d5b6d8e72950

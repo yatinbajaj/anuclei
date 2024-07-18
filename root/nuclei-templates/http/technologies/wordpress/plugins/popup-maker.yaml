@@ -1,0 +1,49 @@
+id: wordpress-popup-maker
+
+info:
+  name: Popup Maker – Boost Sales, Conversions, Optins, Subscribers with the Ultimate WP Popups Builder Detection
+  author: ricardomaia
+  severity: info
+  reference:
+    - https://wordpress.org/plugins/popup-maker/
+  metadata:
+    plugin_namespace: popup-maker
+    wpscan: https://wpscan.com/plugin/popup-maker
+  tags: tech,wordpress,wp-plugin,top-100,top-200
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/wp-content/plugins/popup-maker/readme.txt"
+
+    payloads:
+      last_version: helpers/wordpress/plugins/popup-maker.txt
+
+    extractors:
+      - type: regex
+        part: body
+        internal: true
+        name: internal_detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+      - type: regex
+        part: body
+        name: detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+    matchers-condition: or
+    matchers:
+      - type: dsl
+        name: "outdated_version"
+        dsl:
+          - compare_versions(internal_detected_version, concat("< ", last_version))
+
+      - type: regex
+        part: body
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+# digest: 4a0a00473045022100ae896b1301d3674d9500be4ef671983e5199ea50b9603f15f2b59783ee460cd5022050b360d91fabf00e4b23417d6f52f2c482bb6a2a550f900992505854b334a6cd:922c64590222798bb761d5b6d8e72950

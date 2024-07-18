@@ -1,0 +1,49 @@
+id: wordpress-cookie-law-info
+
+info:
+  name: CookieYes – Cookie Banner for Cookie Consent (Easy to setup GDPR/CCPA Compliant Cookie Notice) Detection
+  author: ricardomaia
+  severity: info
+  reference:
+    - https://wordpress.org/plugins/cookie-law-info/
+  metadata:
+    plugin_namespace: cookie-law-info
+    wpscan: https://wpscan.com/plugin/cookie-law-info
+  tags: tech,wordpress,wp-plugin,top-100,top-200
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/wp-content/plugins/cookie-law-info/readme.txt"
+
+    payloads:
+      last_version: helpers/wordpress/plugins/cookie-law-info.txt
+
+    extractors:
+      - type: regex
+        part: body
+        internal: true
+        name: internal_detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+      - type: regex
+        part: body
+        name: detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+    matchers-condition: or
+    matchers:
+      - type: dsl
+        name: "outdated_version"
+        dsl:
+          - compare_versions(internal_detected_version, concat("< ", last_version))
+
+      - type: regex
+        part: body
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+# digest: 4a0a00473045022017bf92efe29161cdaf705bca0b889a9d608f0037a0eff16122157a0e3220afb7022100958d80c4d55f5e2e92daa9e5bd835065a755c33b82a59a6d0b2a96f47aaa5732:922c64590222798bb761d5b6d8e72950

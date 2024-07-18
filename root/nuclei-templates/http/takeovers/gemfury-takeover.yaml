@@ -1,0 +1,37 @@
+id: gemfury-takeover
+
+info:
+  name: Gemfury Takeover Detection
+  author: pdteam,daffainfo
+  severity: high
+  description: Gemfury takeover was detected.
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz/issues/154
+  metadata:
+    max-request: 1
+  tags: takeover,gemfury
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    host-redirects: true
+    max-redirects: 1
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        part: header
+        words:
+          - "Location: https://gemfury.com/404"
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4a0a00473045022100a4a5a5c7f4cbdea4dfe6ba54f24e8d115c4b4ed97463e0b6f2f59089005693d402201739eab6a73212a6753bfc7014fef9f080667f4ecf1562df1d3ebdfe569a65b5:922c64590222798bb761d5b6d8e72950

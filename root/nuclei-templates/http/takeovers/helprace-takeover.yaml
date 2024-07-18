@@ -1,0 +1,34 @@
+id: helprace-takeover
+
+info:
+  name: Helprace Takeover Detection
+  author: pdteam
+  severity: high
+  description: Helprace takeover was detected.
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz/issues/115
+  metadata:
+    max-request: 1
+  tags: takeover,helprace
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - "Alias not configured!"
+          - "Admin of this Helprace account needs to set up domain alias"
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4a0a00473045022027d08153b33fe40911fd49617721948492c62cc3d3d544c406599e8961424af5022100943309fe155a4cf41828089ec841eaeadb44e39a7e7c66113725e3eb40bf14e4:922c64590222798bb761d5b6d8e72950

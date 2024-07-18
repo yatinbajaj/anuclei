@@ -1,0 +1,49 @@
+id: wordpress-astra-sites
+
+info:
+  name: Starter Templates — Elementor, WordPress & Beaver Builder Templates Detection
+  author: ricardomaia
+  severity: info
+  reference:
+    - https://wordpress.org/plugins/astra-sites/
+  metadata:
+    plugin_namespace: astra-sites
+    wpscan: https://wpscan.com/plugin/astra-sites
+  tags: tech,wordpress,wp-plugin,top-100,top-200
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/wp-content/plugins/astra-sites/readme.txt"
+
+    payloads:
+      last_version: helpers/wordpress/plugins/astra-sites.txt
+
+    extractors:
+      - type: regex
+        part: body
+        internal: true
+        name: internal_detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+      - type: regex
+        part: body
+        name: detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+    matchers-condition: or
+    matchers:
+      - type: dsl
+        name: "outdated_version"
+        dsl:
+          - compare_versions(internal_detected_version, concat("< ", last_version))
+
+      - type: regex
+        part: body
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+# digest: 490a0046304402203558201bb4dd5a68db7b2e7d602573f62c87a6bb7b0dc3eab0b3c218a3a0d7d9022024209e4f6c9cd8e71f948f3289d3c10a426e527d636d626679c5990c99bcf44e:922c64590222798bb761d5b6d8e72950

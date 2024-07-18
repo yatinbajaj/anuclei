@@ -1,0 +1,34 @@
+id: ngrok-takeover
+
+info:
+  name: Ngrok Takeover Detection
+  author: pdteam
+  severity: high
+  description: Ngrok takeover was detected.
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz/issues/92
+  metadata:
+    max-request: 1
+  tags: takeover,ngrok
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - ngrok.io not found
+          - Tunnel *.ngrok.io not found
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4a0a00473045022100be3ad2b3fe9c69371245fb062c73d6fef40199eed88340cee28ff023664fa76202203c6a116f08d99806c26409d9284df5ac6c93e5c5886bb79b8824e8e641c55d70:922c64590222798bb761d5b6d8e72950

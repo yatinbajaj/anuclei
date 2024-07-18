@@ -1,0 +1,41 @@
+id: squadcast-takeover
+
+info:
+  name: Squadcast Takeover Detection
+  author: philippedelteil
+  severity: high
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz/issues/398
+  metadata:
+    max-request: 1
+  tags: takeover,squadcast
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    redirects: true
+    max-redirects: 2
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - 'There doesn’t seem to be an active status page associated with this URL.'
+          - 'Please check the URL and try again.'
+        condition: and
+
+      - type: status
+        status:
+          - 404
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4b0a004830460221009bd4e2c96f378728a169b30d9f8dbb6709bb0b212fd48297c86d27d05bf8e6e0022100b8618a8aa2e41507730211937599b02a39cce1b8662ae0da5f0ea632ee222517:922c64590222798bb761d5b6d8e72950

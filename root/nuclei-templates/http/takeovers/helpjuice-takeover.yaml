@@ -1,0 +1,33 @@
+id: helpjuice-takeover
+
+info:
+  name: helpjuice takeover detection
+  author: pdteam
+  severity: high
+  description: helpjuice takeover was detected.
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz
+  metadata:
+    max-request: 1
+  tags: takeover
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - We could not find what you're looking for.
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4b0a00483046022100a35d9fdeea4128eb38c04dea1b5d3693810c966a13e599dcc2be949fe36554820221009a7e1fa76dcfb51b1c2fe04202c129cf7b893465f48049feccaeb79258a0a366:922c64590222798bb761d5b6d8e72950

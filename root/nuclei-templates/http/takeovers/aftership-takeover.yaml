@@ -1,0 +1,33 @@
+id: aftership-takeover
+
+info:
+  name: Aftership - Subdomain Takeover Detection
+  author: pdteam
+  severity: high
+  description: Aftership subdomain takeover was detected.
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz
+  metadata:
+    max-request: 1
+  tags: takeover
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - Oops.</h2><p class="text-muted text-tight">The page you're looking for doesn't exist.
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4a0a0047304502203bd36036183a037bd252566dbbb5e7f0816219e8cea973674b3f087995c41183022100b4efe16a28cab2e2e12dfe9019bbf1fe083d72eb5c660a2ab0bdbd5dce65d877:922c64590222798bb761d5b6d8e72950

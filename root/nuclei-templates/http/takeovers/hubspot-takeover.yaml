@@ -1,0 +1,36 @@
+id: hubspot-takeover
+
+info:
+  name: hubspot takeover detection
+  author: pdteam
+  severity: high
+  description: hubspot takeover was detected.
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz/issues/59
+    - https://hackerone.com/reports/335330
+  metadata:
+    max-request: 1
+  tags: takeover,hubspot,hackerone
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - "Domain not found"
+          - "does not exist in our system"
+        condition: and
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 490a0046304402206ce71ca779690190161ec883a0f6a10d9d38905219eba277ea6dfb04d7466cd4022027eb6f3bd3010a4a5d68befc5b652eac733f20cefb5f1f9019d1f5020f40e148:922c64590222798bb761d5b6d8e72950

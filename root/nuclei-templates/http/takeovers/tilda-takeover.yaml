@@ -1,0 +1,38 @@
+id: tilda-takeover
+
+info:
+  name: tilda takeover detection
+  author: pdteam
+  severity: high
+  description: Tilda takeover was detected.
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz/issues/155
+  metadata:
+    max-request: 1
+  tags: takeover
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - Please go to the site settings and put the domain name in the Domain tab.
+
+      - type: word
+        words:
+          - "<title>Please renew your subscription</title>"
+        negative: true
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4a0a0047304502202336fcd9a9f8d6c225058e80a03e5698c9aaff69b30cb55f7db16756da443f59022100a1411c4e1c57bd88cb6850e53bb523bf8c33c19d101c2764b7b2e7572a9548bf:922c64590222798bb761d5b6d8e72950

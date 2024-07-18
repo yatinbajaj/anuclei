@@ -1,0 +1,49 @@
+id: wordpress-wp-reviews-plugin-for-google
+
+info:
+  name: Widgets for Google Reviews Detection
+  author: ricardomaia
+  severity: info
+  reference:
+    - https://wordpress.org/plugins/wp-reviews-plugin-for-google/
+  metadata:
+    plugin_namespace: wp-reviews-plugin-for-google
+    wpscan: https://wpscan.com/plugin/wp-reviews-plugin-for-google
+  tags: tech,wordpress,wp-plugin,top-200
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/wp-content/plugins/wp-reviews-plugin-for-google/readme.txt"
+
+    payloads:
+      last_version: helpers/wordpress/plugins/wp-reviews-plugin-for-google.txt
+
+    extractors:
+      - type: regex
+        part: body
+        internal: true
+        name: internal_detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+      - type: regex
+        part: body
+        name: detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+    matchers-condition: or
+    matchers:
+      - type: dsl
+        name: "outdated_version"
+        dsl:
+          - compare_versions(internal_detected_version, concat("< ", last_version))
+
+      - type: regex
+        part: body
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+# digest: 4a0a004730450221008f9efea9a299f231a68a2560f55fa0f2dfb6f9c3a962ff58d5f15af42e2befff022014b8c6d7899f71c3a9b90d2459163146c06b2d57d3bccc46ea80121c33b93e3f:922c64590222798bb761d5b6d8e72950

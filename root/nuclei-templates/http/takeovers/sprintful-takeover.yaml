@@ -1,0 +1,42 @@
+id: sprintful-takeover
+
+info:
+  name: Sprintful Takeover
+  author: Mhdsamx
+  severity: high
+  description: Sprintful takeover was detected.
+  metadata:
+    max-request: 1
+  tags: takeover,sprintful
+
+http:
+  - method: GET
+    path:
+      - '{{BaseURL}}'
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - 'The user account associated with this calendar has been deactivated.'
+          - 'Please contact the owner of this calendar directly in order to book a meeting.'
+          - 'This domain name does not have a default page configured.'
+        condition: or
+
+      - type: word
+        words:
+          - "Sprintful"
+
+      - type: status
+        status:
+          - 200
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 490a0046304402202faae6dd1e1075349daf0b9382c13500e2c12d16a131791a95c98e025a80543202200a4d444f499455ad564b5cf9be22d31ce9e001595e92ab77b2b91e4160940d36:922c64590222798bb761d5b6d8e72950

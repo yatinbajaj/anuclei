@@ -1,0 +1,36 @@
+id: strikingly-takeover
+
+info:
+  name: Strikingly Takeover Detection
+  author: pdteam
+  severity: high
+  description: Strikingly takeover was detected.
+  reference:
+    - https://medium.com/@sherif0x00/takeover-subdomains-pointing-to-strikingly-5e67df80cdfd
+    - https://github.com/EdOverflow/can-i-take-over-xyz/issues/58
+  metadata:
+    max-request: 1
+  tags: takeover,strikingly
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - "But if you're looking to build your own website"
+          - "you've come to the right place."
+        condition: and
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4b0a004830460221009e5d298567c427fc0d1a199cbb2634c5fdc7f11b95dad2657d2314b3675056e5022100d08db1a81efc9de0013e99f5968cb948ee6cca04c57c331bd6aa6d23d194a859:922c64590222798bb761d5b6d8e72950

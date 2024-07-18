@@ -1,0 +1,40 @@
+id: flexbe-takeover
+
+info:
+  name: Flexbe Subdomain Takeover
+  author: 0x_Akoko
+  severity: high
+  description: Flexbe takeover was detected.
+  reference:
+    - https://web.archive.org/web/20211002185648/https://github.com/EdOverflow/can-i-take-over-xyz/issues/237
+    - https://help.flexbe.com/domains/
+  metadata:
+    max-request: 1
+  tags: takeover,flexbe
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        condition: and
+        words:
+          - "Domain not configured"
+          - "flexbe.com"
+
+      - type: status
+        status:
+          - 404
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4a0a00473045022058ef15819ab6fb25b5f79436a3f8d581e504c0f6f92f9dc3c18fa2478bf3c3f80221009fa3274b5d611c04ce851a3c53d8af98e913475ec2a8c006bf80591531f6954a:922c64590222798bb761d5b6d8e72950

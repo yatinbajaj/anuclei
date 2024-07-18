@@ -1,0 +1,49 @@
+id: wordpress-regenerate-thumbnails
+
+info:
+  name: Regenerate Thumbnails Detection
+  author: ricardomaia
+  severity: info
+  reference:
+    - https://wordpress.org/plugins/regenerate-thumbnails/
+  metadata:
+    plugin_namespace: regenerate-thumbnails
+    wpscan: https://wpscan.com/plugin/regenerate-thumbnails
+  tags: tech,wordpress,wp-plugin,top-100,top-200
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/wp-content/plugins/regenerate-thumbnails/readme.txt"
+
+    payloads:
+      last_version: helpers/wordpress/plugins/regenerate-thumbnails.txt
+
+    extractors:
+      - type: regex
+        part: body
+        internal: true
+        name: internal_detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+      - type: regex
+        part: body
+        name: detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+    matchers-condition: or
+    matchers:
+      - type: dsl
+        name: "outdated_version"
+        dsl:
+          - compare_versions(internal_detected_version, concat("< ", last_version))
+
+      - type: regex
+        part: body
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+# digest: 4a0a00473045022100b95983a70fa5717462902aff3f5e513a428e928530c97bc5428e9eead7c5b73c0220294caa2d40254a635049ef1cf946e7642a5b548b158244f5897dbc2b956ec261:922c64590222798bb761d5b6d8e72950

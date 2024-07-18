@@ -1,0 +1,49 @@
+id: wordpress-really-simple-ssl
+
+info:
+  name: Really Simple SSL – Simple and Lightweight Security Detection
+  author: ricardomaia
+  severity: info
+  reference:
+    - https://wordpress.org/plugins/really-simple-ssl/
+  metadata:
+    plugin_namespace: really-simple-ssl
+    wpscan: https://wpscan.com/plugin/really-simple-ssl
+  tags: tech,wordpress,wp-plugin,top-100,top-200
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/wp-content/plugins/really-simple-ssl/readme.txt"
+
+    payloads:
+      last_version: helpers/wordpress/plugins/really-simple-ssl.txt
+
+    extractors:
+      - type: regex
+        part: body
+        internal: true
+        name: internal_detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+      - type: regex
+        part: body
+        name: detected_version
+        group: 1
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+
+    matchers-condition: or
+    matchers:
+      - type: dsl
+        name: "outdated_version"
+        dsl:
+          - compare_versions(internal_detected_version, concat("< ", last_version))
+
+      - type: regex
+        part: body
+        regex:
+          - '(?i)Stable.tag:\s?([\w.]+)'
+# digest: 4a0a0047304502206a68024a4ac10a0a5a25a540e068c28e591833828663eb34a479d40b5dec60a6022100831b40a660b761a6a540e4fe8ba874904d4622a03658ef15eeb7ef9014dc3934:922c64590222798bb761d5b6d8e72950

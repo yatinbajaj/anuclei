@@ -1,0 +1,33 @@
+id: aha-takeover
+
+info:
+  name: Aha - Subdomain Takeover Detection
+  author: pdteam
+  severity: high
+  description: An Aha subdomain takeover was detected.
+  reference:
+    - https://github.com/EdOverflow/can-i-take-over-xyz
+  metadata:
+    max-request: 1
+  tags: takeover
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - Host != ip
+
+      - type: word
+        words:
+          - There is no portal here ... sending you back to Aha!
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "resolve(Host, 'cname')"
+# digest: 4a0a0047304502210081e62f08cee1995440a0f533dac16d17a3d3e09858d21de29e4eb7768384812702204e28ac0c2110a91fb6eb08414f3cec591f0efff3b7e935cd6b23a82346138dda:922c64590222798bb761d5b6d8e72950
